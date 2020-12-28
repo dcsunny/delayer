@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"gopkg.in/ini.v1"
-	"log"
 	"fmt"
+	"log"
+
+	"gopkg.in/ini.v1"
 )
 
 // 配置数据

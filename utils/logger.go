@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"os"
-	"io"
-	"fmt"
 )
 
 // 日志类
@@ -26,7 +26,7 @@ func (p *Logger) openFile(fileName string) *os.File {
 func (p *Logger) Info(message string) {
 	fileName := p.AccessLog
 	var out io.Writer
-	if (fileName == "") {
+	if fileName == "" {
 		out = os.Stdout
 	} else {
 		logFile := p.openFile(fileName)
@@ -41,7 +41,7 @@ func (p *Logger) Info(message string) {
 func (p *Logger) Error(message string, exit bool) {
 	fileName := p.ErrorLog
 	var out io.Writer
-	if (fileName == "") {
+	if fileName == "" {
 		out = os.Stdout
 	} else {
 		logFile := p.openFile(fileName)

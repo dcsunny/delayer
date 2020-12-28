@@ -1,6 +1,6 @@
 package main
 
-import "delayer/cmd"
+import "github.com/dcsunny/delayer/cmd"
 
 func main() {
 	c := cmd.Cmd{}

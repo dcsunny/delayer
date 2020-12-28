@@ -1,11 +1,12 @@
 package logic
 
 import (
-	"delayer/utils"
-	"github.com/gomodule/redigo/redis"
-	"time"
-	"strings"
 	"fmt"
+	"strings"
+	"time"
+
+	"github.com/dcsunny/delayer/utils"
+	"github.com/gomodule/redigo/redis"
 )
 
 // 定时器类
@@ -31,7 +32,7 @@ func (p *Timer) Init() {
 			if err != nil {
 				return nil, err
 			}
-			if (p.Config.Redis.Password != "") {
+			if p.Config.Redis.Password != "" {
 				if _, err := c.Do("AUTH", p.Config.Redis.Password); err != nil {
 					c.Close()
 					return nil, err
@@ -50,8 +51,8 @@ func (p *Timer) Init() {
 	}
 	p.Pool = pool
 	handleError := func(err error, funcName string, data string) {
-		if (err != nil) {
-			if (data != "") {
+		if err != nil {
+			if data != "" {
 				data = ", [" + data + "]"
 			}
 			p.Logger.Error(fmt.Sprintf("FAILURE: func %s, %s%s.", funcName, err.Error(), data), false)
@@ -75,7 +76,7 @@ func (p *Timer) Start() {
 func (p *Timer) run() {
 	// 获取到期的任务
 	jobs, err := p.getExpireJobs()
-	if (err != nil) {
+	if err != nil {
 		p.HandleError(err, "getExpireJobs", "")
 		return
 	}
@@ -88,7 +89,7 @@ func (p *Timer) run() {
 	// Topic分组
 	for i := 0; i < len(jobs); i++ {
 		arr := <-ch
-		if (arr[1] != "") {
+		if arr[1] != "" {
 			if _, ok := topics[arr[1]]; !ok {
 				jobIDs := []string{arr[0]}
 				topics[arr[1]] = jobIDs
@@ -115,7 +116,7 @@ func (p *Timer) getJobTopic(jobID string, ch chan []string) {
 	conn := p.Pool.Get()
 	defer conn.Close()
 	topic, err := redis.Strings(conn.Do("HMGET", PREFIX_JOB_BUCKET+jobID, "topic"))
-	if (err != nil) {
+	if err != nil {
 		p.HandleError(err, "getJobTopic", jobID)
 		ch <- []string{jobID, ""}
 		return

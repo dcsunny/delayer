@@ -1,14 +1,15 @@
 package cmd
 
 import (
-	"delayer/utils"
-	"delayer/logic"
-	"fmt"
-	"os"
 	"flag"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"os/signal"
 	"syscall"
-	"io/ioutil"
+
+	"github.com/dcsunny/delayer/logic"
+	"github.com/dcsunny/delayer/utils"
 )
 
 const (
@@ -59,20 +60,20 @@ func (p *Cmd) Run() {
 
 // 欢迎信息
 func welcome() {
-	fmt.Println("    ____       __                     ");
-	fmt.Println("   / __ \\___  / /___ ___  _____  _____");
-	fmt.Println("  / / / / _ \\/ / __ `/ / / / _ \\/ ___/");
-	fmt.Println(" / /_/ /  __/ / /_/ / /_/ /  __/ /    ");
-	fmt.Println("/_____/\\___/_/\\__,_/\\__, /\\___/_/     ");
-	fmt.Println("                   /____/             ");
-	fmt.Println("Service:		delayer");
-	fmt.Println("Version:		" + APP_VERSION);
+	fmt.Println("    ____       __                     ")
+	fmt.Println("   / __ \\___  / /___ ___  _____  _____")
+	fmt.Println("  / / / / _ \\/ / __ `/ / / / _ \\/ ___/")
+	fmt.Println(" / /_/ /  __/ / /_/ / /_/ /  __/ /    ")
+	fmt.Println("/_____/\\___/_/\\__,_/\\__, /\\___/_/     ")
+	fmt.Println("                   /____/             ")
+	fmt.Println("Service:		delayer")
+	fmt.Println("Version:		" + APP_VERSION)
 }
 
 // PID处理
 func (p *Cmd) handlePid() {
 	// 不处理
-	if (p.config.Delayer.Pid == "") {
+	if p.config.Delayer.Pid == "" {
 		return
 	}
 	// 读取
@@ -83,7 +84,7 @@ func (p *Cmd) handlePid() {
 	}
 	// 重复启动处理
 	pid, err := utils.ByteToInt(pidStr)
-	if (err != nil) {
+	if err != nil {
 		p.writePidFile(p.config.Delayer.Pid)
 		return
 	}
@@ -142,7 +143,7 @@ func (p *Cmd) handleFlags() (bool, string) {
 	help := *flagH || *flagHelp
 	version := *flagV || *flagVersion
 	configuration := ""
-	if (*flagC == "") {
+	if *flagC == "" {
 		configuration = *flagConfiguration
 	} else {
 		configuration = *flagC
@@ -160,20 +161,20 @@ func (p *Cmd) handleFlags() (bool, string) {
 
 // 打印帮助
 func printHelp() {
-	fmt.Println("Usage: delayer [options]");
+	fmt.Println("Usage: delayer [options]")
 	fmt.Println()
-	fmt.Println("Options:");
-	fmt.Println("-d/--daemon run in the background");
-	fmt.Println("-c/--configuration FILENAME -- configuration file path (searches if not given)");
-	fmt.Println("-h/--help -- print this usage message and exit");
-	fmt.Println("-v/--version -- print version number and exit");
+	fmt.Println("Options:")
+	fmt.Println("-d/--daemon run in the background")
+	fmt.Println("-c/--configuration FILENAME -- configuration file path (searches if not given)")
+	fmt.Println("-h/--help -- print this usage message and exit")
+	fmt.Println("-v/--version -- print version number and exit")
 	fmt.Println()
 	os.Exit(0)
 }
 
 // 打印版本
 func printVersion() {
-	fmt.Println(APP_VERSION);
+	fmt.Println(APP_VERSION)
 	fmt.Println()
 	os.Exit(0)
 }

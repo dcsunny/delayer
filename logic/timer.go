@@ -117,6 +117,11 @@ func (p *Timer) getJobTopic(jobID string, ch chan []string) {
 	defer conn.Close()
 	topic, err := redis.Strings(conn.Do("HMGET", PREFIX_JOB_BUCKET+jobID, "topic"))
 	if err != nil {
+		if err == redis.ErrNil {
+			// 删除delayer:job_pool里面的jobid
+			conn.Do("HDEL", KEY_JOB_POOL, jobID)
+			return
+		}
 		p.HandleError(err, "getJobTopic", jobID)
 		ch <- []string{jobID, ""}
 		return
